@@ -60,6 +60,31 @@ Chem-lap/
 - Node.js 16 or higher
 - npm or yarn
 
+### Quick Start (Recommended)
+
+**Linux/Mac:**
+```bash
+./run_dev.sh
+```
+
+**Windows:**
+```
+run_dev.bat
+```
+
+The scripts will:
+1. Create and activate Python virtual environment
+2. Install all backend dependencies
+3. Install all frontend dependencies
+4. Start both backend and frontend servers
+5. Initialize the database with a default admin user
+
+Default admin credentials:
+- Username: `admin`
+- Password: `admin123`
+
+### Manual Setup
+
 ### Backend Setup
 
 1. Navigate to the backend directory:
