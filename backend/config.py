@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+import warnings
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
@@ -8,13 +9,19 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-key-change-in-production'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     
-    # Production warning
-    @classmethod
-    def init_app(cls):
-        if cls.SECRET_KEY == 'dev-secret-key-change-in-production':
-            import warnings
+    def __init__(self):
+        # Production warning
+        if self.SECRET_KEY == 'dev-secret-key-change-in-production':
             warnings.warn(
                 'Using default SECRET_KEY in production is insecure! '
                 'Set the SECRET_KEY environment variable.',
                 stacklevel=2
             )
+
+# Trigger warning if using default keys
+if Config.SECRET_KEY == 'dev-secret-key-change-in-production' and os.environ.get('FLASK_ENV') != 'development':
+    warnings.warn(
+        'Using default SECRET_KEY in production is insecure! '
+        'Set the SECRET_KEY environment variable.',
+        stacklevel=2
+    )

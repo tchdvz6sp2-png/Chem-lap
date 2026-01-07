@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { safetyService } from '../services';
+import { isValidJSON, formatErrorMessage } from '../utils/helpers';
 
 function Safety() {
   const [protocols, setProtocols] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingProtocol, setEditingProtocol] = useState(null);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -34,6 +36,14 @@ function Safety() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    
+    // Validate JSON fields
+    if (formData.related_chemicals && !isValidJSON(formData.related_chemicals)) {
+      setError('Related Chemicals field contains invalid JSON format');
+      return;
+    }
+    
     try {
       if (editingProtocol) {
         await safetyService.update(editingProtocol.id, formData);
@@ -51,7 +61,7 @@ function Safety() {
       loadProtocols();
     } catch (error) {
       console.error('Error saving safety protocol:', error);
-      alert('Error saving safety protocol');
+      setError(formatErrorMessage(error));
     }
   };
 
@@ -142,10 +152,14 @@ function Safety() {
           <div className="modal-content">
             <div className="modal-header">
               <h2>{editingProtocol ? 'Edit Safety Protocol' : 'Add Safety Protocol'}</h2>
-              <button className="modal-close" onClick={() => setShowModal(false)}>
+              <button className="modal-close" onClick={() => {
+                setShowModal(false);
+                setError('');
+              }}>
                 ×
               </button>
             </div>
+            {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Title *</label>

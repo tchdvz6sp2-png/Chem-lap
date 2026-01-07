@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { experimentService } from '../services';
+import { isValidJSON, formatErrorMessage } from '../utils/helpers';
 
 function Experiments() {
   const [experiments, setExperiments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingExperiment, setEditingExperiment] = useState(null);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -36,6 +38,14 @@ function Experiments() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    
+    // Validate JSON fields
+    if (formData.chemicals_used && !isValidJSON(formData.chemicals_used)) {
+      setError('Chemicals Used field contains invalid JSON format');
+      return;
+    }
+    
     try {
       if (editingExperiment) {
         await experimentService.update(editingExperiment.id, formData);
@@ -55,7 +65,7 @@ function Experiments() {
       loadExperiments();
     } catch (error) {
       console.error('Error saving experiment:', error);
-      alert('Error saving experiment');
+      setError(formatErrorMessage(error));
     }
   };
 
@@ -150,10 +160,14 @@ function Experiments() {
           <div className="modal-content">
             <div className="modal-header">
               <h2>{editingExperiment ? 'Edit Experiment' : 'New Experiment'}</h2>
-              <button className="modal-close" onClick={() => setShowModal(false)}>
+              <button className="modal-close" onClick={() => {
+                setShowModal(false);
+                setError('');
+              }}>
                 ×
               </button>
             </div>
+            {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Title *</label>

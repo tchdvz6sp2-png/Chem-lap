@@ -90,21 +90,31 @@ def add_chemical():
     if not data or not data.get('name') or not data.get('quantity') or not data.get('unit'):
         return jsonify({'error': 'Missing required fields'}), 400
     
-    chemical = Chemical(
-        name=data['name'],
-        cas_number=data.get('cas_number'),
-        quantity=data['quantity'],
-        unit=data['unit'],
-        location=data.get('location'),
-        expiry_date=datetime.strptime(data['expiry_date'], '%Y-%m-%d').date() if data.get('expiry_date') else None,
-        minimum_stock=data.get('minimum_stock', 0),
-        safety_info=data.get('safety_info')
-    )
-    
-    db.session.add(chemical)
-    db.session.commit()
-    
-    return jsonify(chemical.to_dict()), 201
+    try:
+        expiry_date = None
+        if data.get('expiry_date'):
+            expiry_date = datetime.strptime(data['expiry_date'], '%Y-%m-%d').date()
+        
+        chemical = Chemical(
+            name=data['name'],
+            cas_number=data.get('cas_number'),
+            quantity=data['quantity'],
+            unit=data['unit'],
+            location=data.get('location'),
+            expiry_date=expiry_date,
+            minimum_stock=data.get('minimum_stock', 0),
+            safety_info=data.get('safety_info')
+        )
+        
+        db.session.add(chemical)
+        db.session.commit()
+        
+        return jsonify(chemical.to_dict()), 201
+    except ValueError as e:
+        return jsonify({'error': f'Invalid date format. Use YYYY-MM-DD: {str(e)}'}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to add chemical: {str(e)}'}), 500
 
 @inventory_bp.route('/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -115,26 +125,35 @@ def update_chemical(id):
     
     data = request.get_json()
     
-    if 'name' in data:
-        chemical.name = data['name']
-    if 'cas_number' in data:
-        chemical.cas_number = data['cas_number']
-    if 'quantity' in data:
-        chemical.quantity = data['quantity']
-    if 'unit' in data:
-        chemical.unit = data['unit']
-    if 'location' in data:
-        chemical.location = data['location']
-    if 'expiry_date' in data:
-        chemical.expiry_date = datetime.strptime(data['expiry_date'], '%Y-%m-%d').date() if data['expiry_date'] else None
-    if 'minimum_stock' in data:
-        chemical.minimum_stock = data['minimum_stock']
-    if 'safety_info' in data:
-        chemical.safety_info = data['safety_info']
-    
-    db.session.commit()
-    
-    return jsonify(chemical.to_dict()), 200
+    try:
+        if 'name' in data:
+            chemical.name = data['name']
+        if 'cas_number' in data:
+            chemical.cas_number = data['cas_number']
+        if 'quantity' in data:
+            chemical.quantity = data['quantity']
+        if 'unit' in data:
+            chemical.unit = data['unit']
+        if 'location' in data:
+            chemical.location = data['location']
+        if 'expiry_date' in data:
+            if data['expiry_date']:
+                chemical.expiry_date = datetime.strptime(data['expiry_date'], '%Y-%m-%d').date()
+            else:
+                chemical.expiry_date = None
+        if 'minimum_stock' in data:
+            chemical.minimum_stock = data['minimum_stock']
+        if 'safety_info' in data:
+            chemical.safety_info = data['safety_info']
+        
+        db.session.commit()
+        
+        return jsonify(chemical.to_dict()), 200
+    except ValueError as e:
+        return jsonify({'error': f'Invalid date format. Use YYYY-MM-DD: {str(e)}'}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to update chemical: {str(e)}'}), 500
 
 @inventory_bp.route('/<int:id>', methods=['DELETE'])
 @jwt_required()
