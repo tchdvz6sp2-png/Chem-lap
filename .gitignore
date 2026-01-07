@@ -60,3 +60,6 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Test scripts
+test_backend.py
