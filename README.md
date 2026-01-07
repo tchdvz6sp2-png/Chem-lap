@@ -76,7 +76,17 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-5. Run the backend server:
+5. (Optional) Seed the database with sample data:
+```bash
+python seed.py
+```
+
+This creates:
+- Admin user (username: `admin`, password: `admin123`)
+- Sample chemicals with varying stock levels and expiry dates
+- Safety protocols covering general lab safety, chemical handling, emergency procedures, and PPE requirements
+
+6. Run the backend server:
 ```bash
 python app.py
 ```
