@@ -28,5 +28,8 @@ def create_app():
     return app
 
 if __name__ == '__main__':
+    import os
     app = create_app()
-    app.run(debug=True, port=5000)
+    # Only enable debug mode in development
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    app.run(debug=debug_mode, port=5000)

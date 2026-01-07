@@ -175,12 +175,27 @@ Returns: { "access_token": "string", "user": {...} }
 
 ## Environment Variables
 
-Create a `.env` file in the backend directory (optional):
+### Development
+For local development, the application uses sensible defaults.
+
+To enable debug mode in development:
+```bash
+export FLASK_ENV=development
+```
+
+### Production
+Create a `.env` file in the backend directory with production values:
 
 ```
-SECRET_KEY=your-secret-key
-JWT_SECRET_KEY=your-jwt-secret-key
+FLASK_ENV=production
+SECRET_KEY=your-strong-random-secret-key-here
+JWT_SECRET_KEY=your-strong-random-jwt-secret-here
 DATABASE_URL=sqlite:///lab_management.db
+```
+
+**Important:** Never use the default secret keys in production. Generate strong random keys using:
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
 ## Security Features
