@@ -1,0 +1,132 @@
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.metric-card h3 {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.metric-value.warning {
+  color: #ff9800;
+}
+
+.alerts-section {
+  margin-bottom: 2rem;
+}
+
+.alerts-section h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.alert {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.alert-warning {
+  border-left-color: #ff9800;
+}
+
+.alert-critical {
+  border-left-color: #f44336;
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+}
+
+.alert-message {
+  flex: 1;
+  color: #333;
+}
+
+.recent-section {
+  margin-bottom: 2rem;
+}
+
+.recent-section h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.experiments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.experiment-item {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.experiment-info h3 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.experiment-info p {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-planned {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-in_progress {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.status-completed {
+  background: #e8f5e9;
+  color: #388e3c;
+}
