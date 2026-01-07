@@ -17,13 +17,13 @@ def register():
     data = request.get_json()
     
     if not data or not data.get('username') or not data.get('password') or not data.get('email'):
-        return jsonify({'error': 'Missing required fields'}), 400
+        return jsonify({'error': 'Chybí povinná pole'}), 400
     
     if User.query.filter_by(username=data['username']).first():
-        return jsonify({'error': 'Username already exists'}), 400
+        return jsonify({'error': 'Uživatelské jméno již existuje'}), 400
     
     if User.query.filter_by(email=data['email']).first():
-        return jsonify({'error': 'Email already exists'}), 400
+        return jsonify({'error': 'Email již existuje'}), 400
     
     user = User(
         username=data['username'],
@@ -35,19 +35,19 @@ def register():
     db.session.add(user)
     db.session.commit()
     
-    return jsonify({'message': 'User created successfully', 'user': user.to_dict()}), 201
+    return jsonify({'message': 'Uživatel byl úspěšně vytvořen', 'user': user.to_dict()}), 201
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     
     if not data or not data.get('username') or not data.get('password'):
-        return jsonify({'error': 'Missing username or password'}), 400
+        return jsonify({'error': 'Chybí uživatelské jméno nebo heslo'}), 400
     
     user = User.query.filter_by(username=data['username']).first()
     
     if not user or not user.check_password(data['password']):
-        return jsonify({'error': 'Invalid username or password'}), 401
+        return jsonify({'error': 'Neplatné uživatelské jméno nebo heslo'}), 401
     
     access_token = create_access_token(identity=user.id)
     
@@ -63,7 +63,7 @@ def get_current_user():
     user = User.query.get(user_id)
     
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': 'Uživatel nenalezen'}), 404
     
     return jsonify(user.to_dict()), 200
 
@@ -79,7 +79,7 @@ def get_chemicals():
 def get_chemical(id):
     chemical = Chemical.query.get(id)
     if not chemical:
-        return jsonify({'error': 'Chemical not found'}), 404
+        return jsonify({'error': 'Chemikálie nenalezena'}), 404
     return jsonify(chemical.to_dict()), 200
 
 @inventory_bp.route('/', methods=['POST'])
@@ -88,7 +88,7 @@ def add_chemical():
     data = request.get_json()
     
     if not data or not data.get('name') or not data.get('quantity') or not data.get('unit'):
-        return jsonify({'error': 'Missing required fields'}), 400
+        return jsonify({'error': 'Chybí povinná pole'}), 400
     
     try:
         expiry_date = None
@@ -111,17 +111,17 @@ def add_chemical():
         
         return jsonify(chemical.to_dict()), 201
     except ValueError as e:
-        return jsonify({'error': f'Invalid date format. Use YYYY-MM-DD: {str(e)}'}), 400
+        return jsonify({'error': f'Neplatný formát data. Použijte RRRR-MM-DD: {str(e)}'}), 400
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Failed to add chemical: {str(e)}'}), 500
+        return jsonify({'error': f'Nepodařilo se přidat chemikálii: {str(e)}'}), 500
 
 @inventory_bp.route('/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_chemical(id):
     chemical = Chemical.query.get(id)
     if not chemical:
-        return jsonify({'error': 'Chemical not found'}), 404
+        return jsonify({'error': 'Chemikálie nenalezena'}), 404
     
     data = request.get_json()
     
@@ -150,22 +150,22 @@ def update_chemical(id):
         
         return jsonify(chemical.to_dict()), 200
     except ValueError as e:
-        return jsonify({'error': f'Invalid date format. Use YYYY-MM-DD: {str(e)}'}), 400
+        return jsonify({'error': f'Neplatný formát data. Použijte RRRR-MM-DD: {str(e)}'}), 400
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Failed to update chemical: {str(e)}'}), 500
+        return jsonify({'error': f'Nepodařilo se aktualizovat chemikálii: {str(e)}'}), 500
 
 @inventory_bp.route('/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_chemical(id):
     chemical = Chemical.query.get(id)
     if not chemical:
-        return jsonify({'error': 'Chemical not found'}), 404
+        return jsonify({'error': 'Chemikálie nenalezena'}), 404
     
     db.session.delete(chemical)
     db.session.commit()
     
-    return jsonify({'message': 'Chemical deleted successfully'}), 200
+    return jsonify({'message': 'Chemikálie byla úspěšně smazána'}), 200
 
 # Experiment Routes
 @experiments_bp.route('/', methods=['GET'])
@@ -179,7 +179,7 @@ def get_experiments():
 def get_experiment(id):
     experiment = Experiment.query.get(id)
     if not experiment:
-        return jsonify({'error': 'Experiment not found'}), 404
+        return jsonify({'error': 'Experiment nenalezen'}), 404
     return jsonify(experiment.to_dict()), 200
 
 @experiments_bp.route('/', methods=['POST'])
@@ -189,7 +189,7 @@ def create_experiment():
     data = request.get_json()
     
     if not data or not data.get('title'):
-        return jsonify({'error': 'Missing required fields'}), 400
+        return jsonify({'error': 'Chybí povinná pole'}), 400
     
     experiment = Experiment(
         title=data['title'],
@@ -211,7 +211,7 @@ def create_experiment():
 def update_experiment(id):
     experiment = Experiment.query.get(id)
     if not experiment:
-        return jsonify({'error': 'Experiment not found'}), 404
+        return jsonify({'error': 'Experiment nenalezen'}), 404
     
     data = request.get_json()
     
@@ -237,12 +237,12 @@ def update_experiment(id):
 def delete_experiment(id):
     experiment = Experiment.query.get(id)
     if not experiment:
-        return jsonify({'error': 'Experiment not found'}), 404
+        return jsonify({'error': 'Experiment nenalezen'}), 404
     
     db.session.delete(experiment)
     db.session.commit()
     
-    return jsonify({'message': 'Experiment deleted successfully'}), 200
+    return jsonify({'message': 'Experiment byl úspěšně smazán'}), 200
 
 # Safety Protocol Routes
 @safety_bp.route('/', methods=['GET'])
@@ -256,7 +256,7 @@ def get_protocols():
 def get_protocol(id):
     protocol = SafetyProtocol.query.get(id)
     if not protocol:
-        return jsonify({'error': 'Safety protocol not found'}), 404
+        return jsonify({'error': 'Bezpečnostní protokol nenalezen'}), 404
     return jsonify(protocol.to_dict()), 200
 
 @safety_bp.route('/', methods=['POST'])
@@ -265,7 +265,7 @@ def create_protocol():
     data = request.get_json()
     
     if not data or not data.get('title') or not data.get('description'):
-        return jsonify({'error': 'Missing required fields'}), 400
+        return jsonify({'error': 'Chybí povinná pole'}), 400
     
     protocol = SafetyProtocol(
         title=data['title'],
@@ -284,7 +284,7 @@ def create_protocol():
 def update_protocol(id):
     protocol = SafetyProtocol.query.get(id)
     if not protocol:
-        return jsonify({'error': 'Safety protocol not found'}), 404
+        return jsonify({'error': 'Bezpečnostní protokol nenalezen'}), 404
     
     data = request.get_json()
     
@@ -306,12 +306,12 @@ def update_protocol(id):
 def delete_protocol(id):
     protocol = SafetyProtocol.query.get(id)
     if not protocol:
-        return jsonify({'error': 'Safety protocol not found'}), 404
+        return jsonify({'error': 'Bezpečnostní protokol nenalezen'}), 404
     
     db.session.delete(protocol)
     db.session.commit()
     
-    return jsonify({'message': 'Safety protocol deleted successfully'}), 200
+    return jsonify({'message': 'Bezpečnostní protokol byl úspěšně smazán'}), 200
 
 # Dashboard Routes
 @dashboard_bp.route('/metrics', methods=['GET'])
@@ -352,7 +352,7 @@ def get_alerts():
         alerts.append({
             'type': 'low_stock',
             'severity': 'warning',
-            'message': f'{chemical.name} is low on stock ({chemical.quantity} {chemical.unit} remaining)',
+            'message': f'{chemical.name} má nízké zásoby ({chemical.quantity} {chemical.unit} zbývá)',
             'chemical_id': chemical.id
         })
     
@@ -368,7 +368,7 @@ def get_alerts():
         alerts.append({
             'type': 'expiring',
             'severity': 'error',
-            'message': f'{chemical.name} expires on {chemical.expiry_date}',
+            'message': f'{chemical.name} vyprší {chemical.expiry_date}',
             'chemical_id': chemical.id
         })
     

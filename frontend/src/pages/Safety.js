@@ -40,7 +40,7 @@ function Safety() {
     
     // Validate JSON fields
     if (formData.related_chemicals && !isValidJSON(formData.related_chemicals)) {
-      setError('Related Chemicals field contains invalid JSON format');
+      setError('Pole Související chemikálie obsahuje neplatný formát JSON');
       return;
     }
     
@@ -77,13 +77,13 @@ function Safety() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this safety protocol?')) {
+    if (window.confirm('Opravdu chcete smazat tento bezpečnostní protokol?')) {
       try {
         await safetyService.delete(id);
         loadProtocols();
       } catch (error) {
         console.error('Error deleting safety protocol:', error);
-        alert('Error deleting safety protocol');
+        alert('Chyba při mazání bezpečnostního protokolu');
       }
     }
   };
@@ -109,12 +109,22 @@ function Safety() {
     return `badge ${badges[category] || 'badge-info'}`;
   };
 
+  const getCategoryLabel = (category) => {
+    const labels = {
+      general: 'OBECNÉ',
+      chemical_specific: 'SPECIFICKÉ PRO CHEMIKÁLII',
+      emergency: 'NOUZOVÉ',
+      ppe: 'OOP',
+    };
+    return labels[category] || category.toUpperCase();
+  };
+
   return (
     <div className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Safety Protocols</h2>
+        <h2>Bezpečnostní protokoly</h2>
         <button className="btn btn-primary" onClick={openAddModal}>
-          Add Protocol
+          Přidat protokol
         </button>
       </div>
 
@@ -124,7 +134,7 @@ function Safety() {
             <div style={{ marginBottom: '15px' }}>
               <h3 style={{ margin: '0 0 10px 0' }}>{protocol.title}</h3>
               <span className={getCategoryBadge(protocol.category)}>
-                {protocol.category.replace('_', ' ').toUpperCase()}
+                {getCategoryLabel(protocol.category)}
               </span>
             </div>
             <p style={{ color: '#666', marginBottom: '15px', minHeight: '60px' }}>
@@ -132,10 +142,10 @@ function Safety() {
             </p>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button className="btn btn-primary" onClick={() => handleEdit(protocol)} style={{ flex: 1 }}>
-                Edit
+                Upravit
               </button>
               <button className="btn btn-danger" onClick={() => handleDelete(protocol.id)} style={{ flex: 1 }}>
-                Delete
+                Smazat
               </button>
             </div>
           </div>
@@ -143,7 +153,7 @@ function Safety() {
       </div>
       {protocols.length === 0 && (
         <div className="card">
-          <p style={{ textAlign: 'center', padding: '20px' }}>No safety protocols found</p>
+          <p style={{ textAlign: 'center', padding: '20px' }}>Nebyly nalezeny žádné bezpečnostní protokoly</p>
         </div>
       )}
 
@@ -151,7 +161,7 @@ function Safety() {
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{editingProtocol ? 'Edit Safety Protocol' : 'Add Safety Protocol'}</h2>
+              <h2>{editingProtocol ? 'Upravit bezpečnostní protokol' : 'Přidat bezpečnostní protokol'}</h2>
               <button className="modal-close" onClick={() => {
                 setShowModal(false);
                 setError('');
@@ -162,37 +172,37 @@ function Safety() {
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Title *</label>
+                <label>Název *</label>
                 <input type="text" name="title" value={formData.title} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Description *</label>
+                <label>Popis *</label>
                 <textarea name="description" value={formData.description} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Category</label>
+                <label>Kategorie</label>
                 <select name="category" value={formData.category} onChange={handleChange}>
-                  <option value="general">General</option>
-                  <option value="chemical_specific">Chemical Specific</option>
-                  <option value="emergency">Emergency</option>
-                  <option value="ppe">PPE (Personal Protective Equipment)</option>
+                  <option value="general">Obecné</option>
+                  <option value="chemical_specific">Specifické pro chemikálii</option>
+                  <option value="emergency">Nouzové</option>
+                  <option value="ppe">OOP (Osobní ochranné prostředky)</option>
                 </select>
               </div>
               <div className="form-group">
-                <label>Related Chemicals (JSON format)</label>
+                <label>Související chemikálie (formát JSON)</label>
                 <textarea
                   name="related_chemicals"
                   value={formData.related_chemicals}
                   onChange={handleChange}
-                  placeholder='e.g., ["HCl", "H2SO4"]'
+                  placeholder='např. ["HCl", "H2SO4"]'
                 />
               </div>
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button type="button" className="btn" onClick={() => setShowModal(false)}>
-                  Cancel
+                  Zrušit
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  {editingProtocol ? 'Update' : 'Create'}
+                  {editingProtocol ? 'Aktualizovat' : 'Vytvořit'}
                 </button>
               </div>
             </form>

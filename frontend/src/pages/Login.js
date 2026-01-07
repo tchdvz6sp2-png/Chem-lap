@@ -26,7 +26,7 @@ function Login() {
     try {
       if (isRegister) {
         await authService.register(formData.username, formData.email, formData.password);
-        alert('Registration successful! Please login.');
+        alert('Registrace byla úspěšná! Přihlaste se prosím.');
         setIsRegister(false);
         setFormData({ username: '', email: '', password: '' });
       } else {
@@ -34,18 +34,18 @@ function Login() {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred');
+      setError(err.response?.data?.error || 'Došlo k chybě');
     }
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>{isRegister ? 'Register' : 'Login'}</h2>
+        <h2>{isRegister ? 'Registrace' : 'Přihlášení'}</h2>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Username</label>
+            <label>Uživatelské jméno</label>
             <input
               type="text"
               name="username"
@@ -67,7 +67,7 @@ function Login() {
             </div>
           )}
           <div className="form-group">
-            <label>Password</label>
+            <label>Heslo</label>
             <input
               type="password"
               name="password"
@@ -77,11 +77,11 @@ function Login() {
             />
           </div>
           <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-            {isRegister ? 'Register' : 'Login'}
+            {isRegister ? 'Registrovat' : 'Přihlásit se'}
           </button>
         </form>
         <p style={{ textAlign: 'center', marginTop: '20px' }}>
-          {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+          {isRegister ? 'Již máte účet?' : 'Nemáte účet?'}{' '}
           <button
             onClick={() => {
               setIsRegister(!isRegister);
@@ -95,7 +95,7 @@ function Login() {
               textDecoration: 'underline',
             }}
           >
-            {isRegister ? 'Login' : 'Register'}
+            {isRegister ? 'Přihlásit se' : 'Registrovat'}
           </button>
         </p>
       </div>

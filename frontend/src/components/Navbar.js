@@ -17,14 +17,14 @@ function Navbar() {
         <h1>Chem-Lap</h1>
         {user && (
           <nav>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/inventory">Inventory</Link>
-            <Link to="/experiments">Experiments</Link>
-            <Link to="/safety">Safety</Link>
+            <Link to="/dashboard">Přehled</Link>
+            <Link to="/inventory">Inventář</Link>
+            <Link to="/experiments">Experimenty</Link>
+            <Link to="/safety">Bezpečnost</Link>
             <span style={{ marginLeft: '20px', opacity: 0.8 }}>
               {user.username} ({user.role})
             </span>
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout}>Odhlásit se</button>
           </nav>
         )}
       </div>

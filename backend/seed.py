@@ -14,85 +14,85 @@ def seed_data():
             admin = User(username='admin', email='admin@chemlap.com', role='admin')
             admin.set_password('admin123')
             db.session.add(admin)
-            print("Created admin user")
+            print("Vytvořen administrátorský uživatel")
         
         # Create sample chemicals
         if Chemical.query.count() == 0:
             chemicals = [
                 Chemical(
-                    name='Hydrochloric Acid',
+                    name='Kyselina chlorovodíková',
                     cas_number='7647-01-0',
                     quantity=500,
                     unit='ml',
-                    location='Cabinet A1',
+                    location='Skříň A1',
                     expiry_date=date.today() + timedelta(days=365),
                     minimum_stock=100,
-                    safety_info='Corrosive - wear PPE including gloves, goggles, and lab coat'
+                    safety_info='Žíravina - noste OOP včetně rukavic, brýlí a laboratorního pláště'
                 ),
                 Chemical(
-                    name='Sodium Hydroxide',
+                    name='Hydroxid sodný',
                     cas_number='1310-73-2',
                     quantity=250,
                     unit='g',
-                    location='Cabinet A2',
+                    location='Skříň A2',
                     expiry_date=date.today() + timedelta(days=180),
                     minimum_stock=50,
-                    safety_info='Corrosive - avoid contact with skin and eyes'
+                    safety_info='Žíravina - zabraňte kontaktu s pokožkou a očima'
                 ),
                 Chemical(
                     name='Ethanol',
                     cas_number='64-17-5',
                     quantity=1000,
                     unit='ml',
-                    location='Flammables Cabinet',
+                    location='Skříň pro hořlaviny',
                     expiry_date=date.today() + timedelta(days=730),
                     minimum_stock=200,
-                    safety_info='Flammable - keep away from heat sources'
+                    safety_info='Hořlavina - uchovávejte mimo zdroje tepla'
                 ),
                 Chemical(
-                    name='Sulfuric Acid',
+                    name='Kyselina sírová',
                     cas_number='7664-93-9',
                     quantity=50,
                     unit='ml',
-                    location='Cabinet A1',
+                    location='Skříň A1',
                     expiry_date=date.today() + timedelta(days=30),
                     minimum_stock=100,
-                    safety_info='Highly corrosive - handle with extreme care'
+                    safety_info='Silně žíravá - manipulujte s maximální opatrností'
                 ),
             ]
             db.session.add_all(chemicals)
-            print(f"Created {len(chemicals)} sample chemicals")
+            print(f"Vytvořeno {len(chemicals)} ukázkových chemikálií")
         
         # Create safety protocols
         if SafetyProtocol.query.count() == 0:
             protocols = [
                 SafetyProtocol(
-                    title='General Laboratory Safety',
-                    description='Always wear appropriate PPE including lab coat, safety goggles, and gloves. No eating or drinking in the lab. Know the location of safety equipment.',
+                    title='Obecná laboratorní bezpečnost',
+                    description='Vždy noste vhodné OOP včetně laboratorního pláště, ochranných brýlí a rukavic. V laboratoři nejezte ani nepijte. Zjistěte umístění bezpečnostního vybavení.',
                     category='general'
                 ),
                 SafetyProtocol(
-                    title='Handling Corrosive Chemicals',
-                    description='Wear acid-resistant gloves and face shield when handling corrosive substances. Work in fume hood when possible. Have neutralizing agents readily available.',
+                    title='Manipulace s žíravinami',
+                    description='Noste rukavice odolné proti kyselinám a obličejový štít při manipulaci s žíravinami. Pracujte v digestoři, je-li to možné. Mějte připravené neutralizační činidla.',
                     category='chemical_specific',
                     related_chemicals='["HCl", "NaOH", "H2SO4"]'
                 ),
                 SafetyProtocol(
-                    title='Emergency Procedures',
-                    description='In case of chemical spill: evacuate area, alert others, contain spill if safe, notify supervisor. For injuries: use eyewash/shower immediately, seek medical attention.',
+                    title='Nouzové postupy',
+                    description='V případě úniku chemikálie: evakuujte oblast, upozorněte ostatní, zadržte únik, je-li to bezpečné, informujte nadřízeného. Při zranění: okamžitě použijte oční sprchu/bezpečnostní sprchu, vyhledejte lékařskou pomoc.',
                     category='emergency'
                 ),
                 SafetyProtocol(
-                    title='Personal Protective Equipment',
-                    description='Minimum PPE requirements: safety goggles, lab coat, closed-toe shoes, long pants. Additional PPE based on specific hazards.',
+                    title='Osobní ochranné prostředky',
+                    description='Minimální požadavky na OOP: ochranné brýle, laboratorní plášť, uzavřená obuv, dlouhé kalhoty. Další OOP dle konkrétních nebezpečí.',
                     category='ppe'
                 ),
             ]
             db.session.add_all(protocols)
-            print(f"Created {len(protocols)} safety protocols")
+            print(f"Vytvořeno {len(protocols)} bezpečnostních protokolů")
         
         db.session.commit()
-        print("Database seeding completed successfully!")
+        print("Naplnění databáze úspěšně dokončeno!")
 
 if __name__ == '__main__':
     seed_data()

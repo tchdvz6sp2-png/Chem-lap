@@ -59,7 +59,7 @@ function Inventory() {
       loadChemicals();
     } catch (error) {
       console.error('Error saving chemical:', error);
-      alert('Error saving chemical');
+      alert('Chyba při ukládání chemikálie');
     }
   };
 
@@ -79,13 +79,13 @@ function Inventory() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this chemical?')) {
+    if (window.confirm('Opravdu chcete smazat tuto chemikálii?')) {
       try {
         await inventoryService.delete(id);
         loadChemicals();
       } catch (error) {
         console.error('Error deleting chemical:', error);
-        alert('Error deleting chemical');
+        alert('Chyba při mazání chemikálie');
       }
     }
   };
@@ -108,9 +108,9 @@ function Inventory() {
   return (
     <div className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Chemical Inventory</h2>
+        <h2>Inventář chemikálií</h2>
         <button className="btn btn-primary" onClick={openAddModal}>
-          Add Chemical
+          Přidat chemikálii
         </button>
       </div>
 
@@ -118,13 +118,13 @@ function Inventory() {
         <table className="table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>CAS Number</th>
-              <th>Quantity</th>
-              <th>Location</th>
-              <th>Expiry Date</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Název</th>
+              <th>CAS číslo</th>
+              <th>Množství</th>
+              <th>Umístění</th>
+              <th>Datum expirace</th>
+              <th>Stav</th>
+              <th>Akce</th>
             </tr>
           </thead>
           <tbody>
@@ -139,7 +139,7 @@ function Inventory() {
                 <td>{chemical.expiry_date || 'N/A'}</td>
                 <td>
                   {chemical.quantity <= chemical.minimum_stock && (
-                    <span className="badge badge-warning">Low Stock</span>
+                    <span className="badge badge-warning">Nízké zásoby</span>
                   )}
                 </td>
                 <td>
@@ -148,67 +148,67 @@ function Inventory() {
                     style={{ marginRight: '10px' }}
                     onClick={() => handleEdit(chemical)}
                   >
-                    Edit
+                    Upravit
                   </button>
                   <button className="btn btn-danger" onClick={() => handleDelete(chemical.id)}>
-                    Delete
+                    Smazat
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {chemicals.length === 0 && <p style={{ textAlign: 'center', padding: '20px' }}>No chemicals found</p>}
+        {chemicals.length === 0 && <p style={{ textAlign: 'center', padding: '20px' }}>Nebyly nalezeny žádné chemikálie</p>}
       </div>
 
       {showModal && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{editingChemical ? 'Edit Chemical' : 'Add Chemical'}</h2>
+              <h2>{editingChemical ? 'Upravit chemikálii' : 'Přidat chemikálii'}</h2>
               <button className="modal-close" onClick={() => setShowModal(false)}>
                 ×
               </button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Name *</label>
+                <label>Název *</label>
                 <input type="text" name="name" value={formData.name} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>CAS Number</label>
+                <label>CAS číslo</label>
                 <input type="text" name="cas_number" value={formData.cas_number} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label>Quantity *</label>
+                <label>Množství *</label>
                 <input type="number" step="0.01" name="quantity" value={formData.quantity} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Unit *</label>
+                <label>Jednotka *</label>
                 <input type="text" name="unit" value={formData.unit} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Location</label>
+                <label>Umístění</label>
                 <input type="text" name="location" value={formData.location} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label>Expiry Date</label>
+                <label>Datum expirace</label>
                 <input type="date" name="expiry_date" value={formData.expiry_date} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label>Minimum Stock</label>
+                <label>Minimální zásoba</label>
                 <input type="number" step="0.01" name="minimum_stock" value={formData.minimum_stock} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label>Safety Information</label>
+                <label>Bezpečnostní informace</label>
                 <textarea name="safety_info" value={formData.safety_info} onChange={handleChange} />
               </div>
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button type="button" className="btn" onClick={() => setShowModal(false)}>
-                  Cancel
+                  Zrušit
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  {editingChemical ? 'Update' : 'Create'}
+                  {editingChemical ? 'Aktualizovat' : 'Vytvořit'}
                 </button>
               </div>
             </form>
