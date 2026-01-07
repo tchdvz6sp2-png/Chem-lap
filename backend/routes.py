@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from models import db, User, Chemical, Experiment, SafetyProtocol
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import json
 
 # Blueprints
@@ -303,9 +303,10 @@ def get_metrics():
     
     # Check for expiring chemicals (within 30 days)
     today = date.today()
+    thirty_days_from_now = today + timedelta(days=30)
     expiring_chemicals = Chemical.query.filter(
         Chemical.expiry_date.isnot(None),
-        Chemical.expiry_date <= date(today.year, today.month + 1 if today.month < 12 else 1, today.day)
+        Chemical.expiry_date <= thirty_days_from_now
     ).count()
     
     active_experiments = Experiment.query.filter_by(status='in_progress').count()
@@ -336,11 +337,12 @@ def get_alerts():
             'chemical_id': chemical.id
         })
     
-    # Expiring soon alerts
+    # Expiring soon alerts (within 30 days)
     today = date.today()
+    thirty_days_from_now = today + timedelta(days=30)
     expiring = Chemical.query.filter(
         Chemical.expiry_date.isnot(None),
-        Chemical.expiry_date <= date(today.year, today.month + 1 if today.month < 12 else 1, today.day)
+        Chemical.expiry_date <= thirty_days_from_now
     ).all()
     
     for chemical in expiring:

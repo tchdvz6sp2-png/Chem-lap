@@ -4,8 +4,13 @@ export const authService = {
   login: async (username, password) => {
     const response = await api.post('/auth/login', { username, password });
     if (response.data.access_token) {
-      localStorage.setItem('token', response.data.access_token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      try {
+        localStorage.setItem('token', response.data.access_token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      } catch (error) {
+        console.error('Error storing authentication data:', error);
+        throw new Error('Failed to store authentication data');
+      }
     }
     return response.data;
   },
@@ -16,17 +21,31 @@ export const authService = {
   },
 
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    } catch (error) {
+      console.error('Error clearing authentication data:', error);
+    }
   },
 
   getCurrentUser: () => {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    try {
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      return null;
+    }
   },
 
   isAuthenticated: () => {
-    return !!localStorage.getItem('token');
+    try {
+      return !!localStorage.getItem('token');
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      return false;
+    }
   },
 };
 

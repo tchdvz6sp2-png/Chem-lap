@@ -189,6 +189,14 @@ DATABASE_URL=sqlite:///lab_management.db
 - JWT-based authentication
 - Protected API endpoints
 - CORS configuration for frontend-backend communication
+- Error handling for localStorage operations
+
+**Security Note:** The current implementation uses localStorage for token storage for simplicity. In a production environment, consider:
+- Using httpOnly cookies for token storage
+- Implementing refresh tokens
+- Adding CSRF protection
+- Using HTTPS for all communications
+- Implementing rate limiting on API endpoints
 
 ## Future Enhancements
 
