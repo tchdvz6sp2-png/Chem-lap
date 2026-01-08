@@ -14,7 +14,7 @@ function PrivateRoute({ children }) {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/Chem-lap">
       <div className="App">
         <Navbar />
         <Routes>
