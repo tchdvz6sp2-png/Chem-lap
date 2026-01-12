@@ -42,7 +42,7 @@ function Experiments() {
     
     // Validate JSON fields
     if (formData.chemicals_used && !isValidJSON(formData.chemicals_used)) {
-      setError('Chemicals Used field contains invalid JSON format');
+      setError('Pole Použité chemikálie obsahuje neplatný formát JSON');
       return;
     }
     
@@ -83,13 +83,13 @@ function Experiments() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this experiment?')) {
+    if (window.confirm('Opravdu chcete smazat tento experiment?')) {
       try {
         await experimentService.delete(id);
         loadExperiments();
       } catch (error) {
         console.error('Error deleting experiment:', error);
-        alert('Error deleting experiment');
+        alert('Chyba při mazání experimentu');
       }
     }
   };
@@ -116,12 +116,21 @@ function Experiments() {
     return `badge ${badges[status] || 'badge-info'}`;
   };
 
+  const getStatusLabel = (status) => {
+    const labels = {
+      in_progress: 'PROBÍHÁ',
+      completed: 'DOKONČENO',
+      cancelled: 'ZRUŠENO',
+    };
+    return labels[status] || status.toUpperCase();
+  };
+
   return (
     <div className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Experiments</h2>
+        <h2>Experimenty</h2>
         <button className="btn btn-primary" onClick={openAddModal}>
-          New Experiment
+          Nový experiment
         </button>
       </div>
 
@@ -134,32 +143,32 @@ function Experiments() {
                 <p style={{ color: '#666', marginBottom: '10px' }}>{experiment.description}</p>
                 <div style={{ marginBottom: '10px' }}>
                   <span className={getStatusBadge(experiment.status)}>
-                    {experiment.status.replace('_', ' ').toUpperCase()}
+                    {getStatusLabel(experiment.status)}
                   </span>
                   <span style={{ marginLeft: '10px', color: '#666', fontSize: '14px' }}>
-                    By: {experiment.username} | Created: {new Date(experiment.created_at).toLocaleDateString()}
+                    Autor: {experiment.username} | Vytvořeno: {new Date(experiment.created_at).toLocaleDateString('cs-CZ')}
                   </span>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button className="btn btn-primary" onClick={() => handleEdit(experiment)}>
-                  Edit
+                  Upravit
                 </button>
                 <button className="btn btn-danger" onClick={() => handleDelete(experiment.id)}>
-                  Delete
+                  Smazat
                 </button>
               </div>
             </div>
           </div>
         ))}
-        {experiments.length === 0 && <p style={{ textAlign: 'center', padding: '20px' }}>No experiments found</p>}
+        {experiments.length === 0 && <p style={{ textAlign: 'center', padding: '20px' }}>Nebyly nalezeny žádné experimenty</p>}
       </div>
 
       {showModal && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{editingExperiment ? 'Edit Experiment' : 'New Experiment'}</h2>
+              <h2>{editingExperiment ? 'Upravit experiment' : 'Nový experiment'}</h2>
               <button className="modal-close" onClick={() => {
                 setShowModal(false);
                 setError('');
@@ -170,39 +179,39 @@ function Experiments() {
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Title *</label>
+                <label>Název *</label>
                 <input type="text" name="title" value={formData.title} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label>Popis</label>
                 <textarea name="description" value={formData.description} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label>Procedure</label>
+                <label>Postup</label>
                 <textarea name="procedure" value={formData.procedure} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label>Results</label>
+                <label>Výsledky</label>
                 <textarea name="results" value={formData.results} onChange={handleChange} />
               </div>
               <div className="form-group">
-                <label>Chemicals Used (JSON format)</label>
-                <textarea name="chemicals_used" value={formData.chemicals_used} onChange={handleChange} placeholder='e.g., [{"name": "HCl", "amount": "10ml"}]' />
+                <label>Použité chemikálie (formát JSON)</label>
+                <textarea name="chemicals_used" value={formData.chemicals_used} onChange={handleChange} placeholder='např. [{"name": "HCl", "amount": "10ml"}]' />
               </div>
               <div className="form-group">
-                <label>Status</label>
+                <label>Stav</label>
                 <select name="status" value={formData.status} onChange={handleChange}>
-                  <option value="in_progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="in_progress">Probíhá</option>
+                  <option value="completed">Dokončeno</option>
+                  <option value="cancelled">Zrušeno</option>
                 </select>
               </div>
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button type="button" className="btn" onClick={() => setShowModal(false)}>
-                  Cancel
+                  Zrušit
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  {editingExperiment ? 'Update' : 'Create'}
+                  {editingExperiment ? 'Aktualizovat' : 'Vytvořit'}
                 </button>
               </div>
             </form>
