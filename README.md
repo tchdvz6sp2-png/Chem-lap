@@ -2,6 +2,8 @@
 
 A comprehensive web-based laboratory management system for tracking chemical inventory, logging experiments, and managing safety protocols.
 
+🌐 **Live Demo:** [https://tchdvz6sp2-png.github.io/Chem-lap](https://tchdvz6sp2-png.github.io/Chem-lap)
+
 ## Features
 
 - **Dashboard** - Central hub displaying key metrics, alerts for low stock and expiring chemicals
@@ -212,6 +214,23 @@ python -c "import secrets; print(secrets.token_hex(32))"
 - Adding CSRF protection
 - Using HTTPS for all communications
 - Implementing rate limiting on API endpoints
+
+## Deployment
+
+### GitHub Pages (Frontend Only)
+
+The frontend is automatically deployed to GitHub Pages on every push to the `main` branch.
+
+**Live URL:** [https://tchdvz6sp2-png.github.io/Chem-lap](https://tchdvz6sp2-png.github.io/Chem-lap)
+
+The deployment is handled by GitHub Actions (see `.github/workflows/deploy.yml`). The workflow:
+1. Installs Node.js dependencies
+2. Builds the React application
+3. Deploys to GitHub Pages
+
+**Note:** GitHub Pages only hosts the static frontend. The backend API needs to be deployed separately (e.g., Heroku, Railway, or any cloud platform that supports Python/Flask).
+
+To configure the backend API URL for the deployed frontend, set the `REACT_APP_API_URL` environment variable during the build process.
 
 ## Future Enhancements
 
